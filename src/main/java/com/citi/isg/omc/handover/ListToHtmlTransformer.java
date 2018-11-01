@@ -1,4 +1,4 @@
-package emailHandover;
+package com.citi.isg.omc.handover;
 
 /**+
  * Transforms the message into email format for handover
@@ -20,24 +20,24 @@ public class ListToHtmlTransformer {
         email.append("</head>\n\n");
         email.append("<body>");
         email.append("<table style='border:2px solid black;width:100%'>");
-        email.append("<tr ><td bgcolor=\"#A8CBFD\" align=\"center\" colspan=\"6\" style='font-weight:bold;font-size:25px'>Open Issues</td></tr>");
+        email.append("<tr ><td bgcolor=\"#A8CBFD\" align=\"center\" colspan=\"9\" style='font-weight:bold;font-size:25px'>Open Issues</td></tr>");
         email.append("<tr bgcolor=\"#dfe8f0\">");
-      //  email.append("<th>ID</th>");
         email.append("<th>Reporter</th>");
         email.append("<th>Email Subject</th>");
         email.append("<th>Tracking</th>");
         email.append("<th>Comments</th>");
         email.append("<th>Last Modified</th>");
+        email.append("<th>Status</th>");
+        email.append("<th>Environment</th>");
+        email.append("<th>Currently With</th>");
         email.append("</tr>");
 
 
         for (HandoverRow row : handover) {
 
             email.append("<tr bgcolor=\"#f1f9fc\">");
-         /*   email.append("<td>");
-            email.append(row.getId());
-            email.append("</td>");
-*/
+
+
             email.append("<td>");
             email.append(row.getReportedBy());
             email.append("</td>");
@@ -56,6 +56,21 @@ public class ListToHtmlTransformer {
 
             email.append("<td>");
             email.append(row.getLastMod());
+            email.append("</td>");
+
+
+            email.append("<td>");
+            email.append(row.getStatus());
+            email.append("</td>");
+
+
+            email.append("<td>");
+            email.append(row.getEnvironment());
+            email.append("</td>");
+
+
+            email.append("<td>");
+            email.append(row.getCurrentlyWith());
             email.append("</td>");
             email.append("<tr>");
         }

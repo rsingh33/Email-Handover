@@ -1,4 +1,4 @@
-package emailHandover;
+package com.citi.isg.omc.handover;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +16,37 @@ public class HandoverRow {
     private String email;
     private String tracking;
     private String comments;
+    private String status;
+    private String currentlyWith;
+
+    public String getCurrentlyWith() {
+        return currentlyWith;
+    }
+
+    public void setCurrentlyWith(String currentlyWith) {
+        this.currentlyWith = currentlyWith;
+    }
+
+
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
+    }
+
+    private String environment;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 
     public String getLastMod() {
         return lastMod;
@@ -26,7 +57,7 @@ public class HandoverRow {
     }
 
 
-    public HandoverRow(long id, String reportedBy, String email, String tracking, String comments) {
+    public HandoverRow(long id, String reportedBy, String email, String tracking, String comments , String status) {
     }
 
     public Long getId() {
@@ -74,11 +105,13 @@ public class HandoverRow {
 
     }
 
-    public HandoverRow(String reportedBy, String email, String tracking, String comments) {
+    public HandoverRow(String reportedBy, String email, String tracking, String comments ,String status,String environment) {
         this.email = email;
         this.tracking = tracking;
         this.comments = comments;
         this.reportedBy = reportedBy;
+        this.status = status;
+        this.environment = environment;
     }
 
 

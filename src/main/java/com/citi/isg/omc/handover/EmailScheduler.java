@@ -1,4 +1,4 @@
-package emailHandover;
+package com.citi.isg.omc.handover;
 
 import java.util.Calendar;
 import java.util.Date;

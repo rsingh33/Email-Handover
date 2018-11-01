@@ -1,9 +1,10 @@
-package emailHandover;
+package com.citi.isg.omc.handover;
 
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -11,28 +12,30 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.util.StringUtils;
 
 
-@Route("")
-@HtmlImport("frontend://styles/shared-styles.html")
-@Theme(value = Lumo.class)
-@Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes")
+import static com.citi.isg.omc.handover.Constants.VIEWPORT;
+
+
+@Route("handover")
+@HtmlImport("src/main-layout.html")
+@StyleSheet("styles/shared-styles.html")
+@PageTitle("Email Handover")
+@Viewport(VIEWPORT)
 public class MainLayout extends VerticalLayout {
 
 
-    private final HandoverRepository repo;
     final Grid<HandoverRow> grid;
-    private final HandoverEditor editor;
     final TextField filter;
+    private final HandoverRepository repo;
+    private final HandoverEditor editor;
     private final Button addNewBtn;
     private final Button sendEmail;
-
-
+    private final Button export;
+    private final Button issuesButton;
 
     public MainLayout(HandoverRepository repo, HandoverEditor editor) {
 
@@ -43,19 +46,28 @@ public class MainLayout extends VerticalLayout {
         this.filter = new TextField();
         this.addNewBtn = new Button("Add Row", VaadinIcon.PLUS.create());
         this.sendEmail = new Button("Send EmailHandover", VaadinIcon.ENVELOPE.create());
-
-
-        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn, sendEmail);
+        this.export = new Button("Export", VaadinIcon.BRIEFCASE.create());
+        this.issuesButton = new Button("Issues", VaadinIcon.AIRPLANE.create());
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn, sendEmail,export, issuesButton);
         add(actions, grid, editor);
 
+        grid.setSizeFull();
         grid.setHeightByRows(true);
-        grid.setColumns("id", "email", "tracking", "comments", "reportedBy", "lastMod");
-        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
-        grid.getColumnByKey("lastMod").setSortable(true);
-        grid.getColumnByKey("reportedBy").setSortable(true);
-        grid.getColumnByKey("id").setSortable(true);
+        grid.setColumns("email", "tracking", "comments", "reportedBy", "lastMod", "status", "environment" , "currentlyWith");
+        grid.getColumnByKey("lastMod").setSortable(true).setResizable(true);
+        grid.getColumnByKey("reportedBy").setSortable(true).setResizable(true);
+        grid.getColumnByKey("status").setResizable(true);
+        grid.getColumnByKey("email").setResizable(true);
+        grid.getColumnByKey("comments").setResizable(true);
+        grid.getColumnByKey("tracking").setResizable(true);
+        grid.getColumnByKey("environment").setResizable(true);
+        grid.setDetailsVisibleOnClick(true);
         grid.setColumnReorderingAllowed(true);
+
         addNewBtn.getElement().setAttribute("theme", "contrast primary");
+        issuesButton.getElement().setAttribute("theme", "contrast primary");
+        sendEmail.getElement().setAttribute("theme", "contrast primary");
+        export.getElement().setAttribute("theme", "contrast primary");
         filter.setPlaceholder("Filter by reporter");
 
 
@@ -63,18 +75,35 @@ public class MainLayout extends VerticalLayout {
         filter.setValueChangeMode(ValueChangeMode.EAGER);
         filter.addValueChangeListener(e -> getHandover(e.getValue()));
 
-        //  emailField.setValueChangeMode(ValueChangeMode.EAGER);
 
 
-        // Connect selected Customer to editor or hide if none is selected
+        // Connect selected row to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
+
             editor.updateHandover(e.getValue());
+
         });
 
-        // Instantiate and edit new Customer the new button is clicked
-        addNewBtn.addClickListener(e -> editor.updateHandover(new HandoverRow()));
+
+       grid.asSingleSelect().addValueChangeListener(e -> {
+            grid.getUI().ifPresent(ui -> ui.navigate("editor"));
+        });
+
+
+        addNewBtn.addClickListener(e ->{
+
+                editor.updateHandover(new HandoverRow());
+
+        });
+        issuesButton.addClickListener(e -> {
+            issuesButton.getUI().ifPresent(ui -> ui.navigate("issues"));
+        });
+       addNewBtn.addClickListener(e -> {
+            addNewBtn.getUI().ifPresent(ui -> ui.navigate("editor"));
+        });
 
         sendEmail.addClickListener(e -> editor.sendEmail());
+
 
         // Listen changes made by the editor, refresh data from backend
         editor.setChangeHandler(() -> {
@@ -88,6 +117,7 @@ public class MainLayout extends VerticalLayout {
         schedule(repo);
 
 
+
     }
 
     private void schedule(HandoverRepository repo) {
@@ -98,6 +128,8 @@ public class MainLayout extends VerticalLayout {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
     }
 
     private void getHandover(String filterText) {
@@ -107,6 +139,7 @@ public class MainLayout extends VerticalLayout {
             grid.setItems(repo.findByReportedByStartsWithIgnoreCase(filterText));
         }
     }
+
 
 
 }

@@ -1,0 +1,27 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/vaadin-text-field/src/vaadin-text-field.html">
+<link rel="import" href="bower_components/vaadin-button/src/vaadin-button.html">
+
+<dom-module id="main-layout">
+    <template>
+<vaadin-text-field placeholder="Filter by  reporter"></vaadin-text-field>
+<vaadin-button theme="green" autofocus icon="lumo:PLUS" property="" slot="suffix" property1="">
+  Add Row 
+</vaadin-button>
+</template>
+
+    <script>
+        class MainLayout extends Polymer.Element {
+            static get is() {
+                return 'main-layout';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+        }
+        customElements.define(MainLayout.is, MainLayout);
+    </script>
+</dom-module>

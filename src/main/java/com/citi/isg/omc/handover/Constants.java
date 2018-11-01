@@ -1,4 +1,4 @@
-package emailHandover;
+package com.citi.isg.omc.handover;
 
 public class Constants {
 
@@ -13,5 +13,5 @@ public class Constants {
     public static String smtpAuth;
     public static String smtpTLS;
     public static String emailSubject;
-
+    public static final String VIEWPORT = "width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes";
 }
